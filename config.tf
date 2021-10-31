@@ -23,18 +23,19 @@ provider "aws" {
 
 resource "tls_private_key" "awskey" {
   algorithm = "RSA"
-  rsa_bits  = 4096
 }
 
 resource "local_file" "priv_key" {
     content     = tls_private_key.awskey.private_key_pem
     filename = "/root/.ssh/id_rsa"
+    file_permission = "0600"
 }
 
-resource "local_file" "pub_key" {
-    content     = tls_private_key.awskey.public_key_pem
-    filename = "/root/.ssh/id_rsa.pub"
-}
+# resource "local_file" "pub_key" {
+#     content     = tls_private_key.awskey.public_key_pem
+#     filename = "/root/.ssh/id_rsa.pub"
+#     file_permission = "0600"
+# }
 
 resource "aws_key_pair" "aws_key_t" {
   key_name   = "aws_key_t"
