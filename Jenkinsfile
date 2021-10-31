@@ -21,8 +21,8 @@ pipeline {
     }
     stage('Provisioning infrastructure with Ansible') {
       environment {
-          DOCKERHUB_CREDS = credentials('dockerhub_token'),
-          BUILD_SERVER_NAME = 'buildserver',
+          DOCKERHUB_CREDS = credentials('dockerhub_token')
+          BUILD_SERVER_NAME = 'buildserver'
           BUILD_SERVER_VERSION = '1.0'
       }
       steps {
