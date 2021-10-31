@@ -17,10 +17,10 @@
       path: ~/
       rm: yes
       # pull: yes
-    name: "{{ build_server_name | default('build_server') }}"
+    name: "{{ build_server_name }}"
     source: build
     state: present
-    tag: "{{ build_server_version | default('latest') }}"
-    repository: "{{ [dockerhub_username, build_server_name] | join('/') | default('artempvl/build_server') }}"
+    tag: "{{ build_server_version }}"
+    repository: "{{ [dockerhub_username, build_server_name] | join('/') }}"
     push: yes
 ...

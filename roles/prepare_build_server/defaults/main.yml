@@ -1,2 +1,4 @@
 ---
 # defaults file for buildserver
+build_server_name: 'buildserver'
+build_server_version: '0.1'

@@ -1,5 +1,6 @@
-FROM ubuntu:latest
+FROM maven:latest
+USER root
 ARG DEBIAN_FRONTEND=noninteractive
-RUN apt update && apt install default-jdk maven -y
-VOLUME [ "/source" ]
-CMD [ "mvn", "-q", "-f", "/source", "package"]
+RUN apt update
+RUN apt install -y docker.io
+RUN apt clean

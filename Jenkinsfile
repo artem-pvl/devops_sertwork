@@ -19,6 +19,22 @@ pipeline {
         sh 'terraform apply -auto-approve'
       }
     }
+    stage('Provisioning infrastructure with Ansible') {
+      environment {
+          DOCKERHUB_CREDS = credentials('dockerhub_token'),
+          BUILD_SERVER_NAME = 'buildserver',
+          BUILD_SERVER_VERSION = '1.0'
+      }
+      steps {
+        ansiblePlaybook(become: true,
+                        becomeUser: 'ubuntu',
+                        disableHostKeyChecking: true,
+                        installation: 'Ansible',
+                        inventory: 'hosts',
+                        playbook: 'conveer.yml'
+        )
+      }
+    }
   //   stage('Build app image and push to nexus') {
   //     agent {
   //       docker {
