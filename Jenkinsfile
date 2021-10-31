@@ -4,12 +4,13 @@ pipeline {
     git 'Default'
   }
 
+  environment {
+      BUILDSRVER_IP = ''
+      WEBSERVER_IP = ''
+  }
+
   agent any
   stages {
-    environment {
-        BUILDSRVER_IP = ''
-        WEBSERVER_IP = ''
-    }
     // stage('Get code of infrastucture') {
     //   git 'https://github.com/artem-pvl/devops_sertwork.git'
     // }
