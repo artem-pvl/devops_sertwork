@@ -91,3 +91,14 @@ resource "aws_instance" "build" {
     Name = "build"
   }
 }
+
+resource "local_file" "hosts" {
+    content = "${templatefile("./hosts.tpl",
+      {
+        webserver_addr = "${aws_instance.web.public_ip}",
+        buildserver_addr = "${aws_instance.build.public_ip}"
+      }
+    )}"
+    filename = "./hosts"
+    # file_permission = "0600"
+}
