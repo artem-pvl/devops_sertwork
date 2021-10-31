@@ -1,0 +1,87 @@
+---
+# tasks file for runvm
+- name: Delete a EC2 key
+  amazon.aws.ec2_key:
+    name: ec2conveer
+    state: absent
+- name: Create a new EC2 key
+  amazon.aws.ec2_key:
+    name: ec2conveer
+    state: present
+    force: yes
+  register: ec2_key_result
+
+- name: Save private key
+  copy: content="{{ ec2_key_result.key.private_key }}" dest="~/id_rsa" mode=0600
+  when: ec2_key_result.changed
+
+- name: Create security group
+  amazon.aws.ec2_group:
+    description: grant all to servers
+    name: securitygroup
+    state: present
+    rules:
+      - proto: all
+        cidr_ip: 0.0.0.0/0
+
+- name: Create EC2 instance for buildserver
+  amazon.aws.ec2_instance:
+    name: buildserver
+    image_id: ami-0f7cd40eac2214b37
+    instance_type: "t2.micro"
+    key_name: ec2conveer
+    security_group: securitygroup
+    validate_certs: no
+    state: running
+    network:
+      assign_public_ip: yes
+
+- name: Gather buildserver instances information
+  ec2_instance_info:
+    filters:
+      "tag:Name": buildserver
+      instance-state-name: [ "running" ]
+  register: buildserver_info
+
+- name: Adding buildserver host to inventory
+  add_host:
+    name: "{{ buildserver_info.instances[0].public_ip_address }}"
+    groups: build
+
+- name: Add buildserver host to ssh config
+  community.general.ssh_config:
+    host: "{{ buildserver_info.instances[0].public_ip_address }}"
+    identity_file: "~/id_rsa"
+    remote_user: ubuntu
+
+- name: Create EC2 instance for webserver
+  amazon.aws.ec2_instance:
+    name: webserver
+    image_id: ami-0f7cd40eac2214b37
+    instance_type: "t2.micro"
+    key_name: ec2conveer
+    security_group: securitygroup
+    state: running
+    validate_certs: no
+    network:
+      assign_public_ip: yes
+  register: webserver_result
+
+- name: Gather webserver instances information
+  ec2_instance_info:
+    filters:
+      "tag:Name": webserver
+      instance-state-name: [ "running" ]
+  register: webserver_info
+
+- name: Adding webserver host to inventory
+  add_host:
+    name: "{{ webserver_info.instances[0].public_ip_address }}"
+    groups: web
+
+- name: Add webserver host to ssh config
+  community.general.ssh_config:
+    host: "{{ webserver_info.instances[0].public_ip_address }}"
+    identity_file: "~/id_rsa"
+    remote_user: ubuntu
+...

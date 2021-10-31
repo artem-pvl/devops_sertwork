@@ -1,0 +1,26 @@
+---
+# tasks file for buildserver
+- name: Copy Dockerfile file for buld_server image
+  ansible.builtin.copy:
+    src: Dockerfile
+    dest: ~/
+    force: yes
+
+- name: Login into docker hub
+  community.docker.docker_login:
+    username: "{{ dockerhub_username }}"
+    password: "{{ dockerhub_token }}"
+
+- name: Create build_server image
+  community.docker.docker_image:
+    build:
+      path: ~/
+      rm: yes
+      # pull: yes
+    name: "{{ build_server_name | default('build_server') }}"
+    source: build
+    state: present
+    tag: "{{ build_server_version | default('latest') }}"
+    repository: "{{ [dockerhub_username, build_server_name] | join('/') | default('artempvl/build_server') }}"
+    push: yes
+...

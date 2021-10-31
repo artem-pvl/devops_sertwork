@@ -1,0 +1,10 @@
+---
+# tasks file for common
+- name: Ensure that docker and docker-compose installed
+  apt:
+    pkg:
+      - docker
+      - docker-compose
+    update_cache: yes
+    state: present
+...

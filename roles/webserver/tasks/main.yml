@@ -1,0 +1,13 @@
+---
+# tasks file for webserver
+- name: Start webserver
+  community.docker.docker_container:
+    name: "{{ webserver_image_name | default('webserver') }}"
+    image: "{{ [[dockerhub_username, webserver_image_name] | join('/'), webserver_version] | join(':') | default('artempvl/webserver:latest') }}"
+    pull: yes
+    detach: yes
+    state: started
+    published_ports:
+      - "{{ webserver_port | default(8080) }}:8080"
+    container_default_behavior: compatibility
+...

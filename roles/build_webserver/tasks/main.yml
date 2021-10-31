@@ -1,0 +1,78 @@
+---
+# tasks file for buildwebserver
+- name: Download project source
+  ansible.builtin.git:
+    clone: yes
+    force: yes
+    dest: /source
+    repo: "{{ source_repository_url }}"
+
+
+- name: Build war file from source
+  vars:
+    nameofbuild: "{{ [dockerhub_username, build_server_name] | join('/') }}"
+  community.docker.docker_container:
+    # image: "{{ build_server_name | default('build_server') }}"
+    image: "{{ [nameofbuild, build_server_version] | join(':') | default('artempvl/build_server') }}"
+    name: "{{ build_server_name | default('build_server') }}"
+    pull: true
+    auto_remove: yes
+    detach: no
+    container_default_behavior: compatibility
+    mounts:
+      - source: /source
+        target: /source
+        type: bind
+    restart: yes
+    state: started
+
+- name: Find created war files
+  ansible.builtin.find:
+   paths: "/source/target/"
+   recurse: no
+   patterns: "*.war"
+  register: files_to_copy
+
+- name: Create war directory
+  file:
+    path: /root/war
+    state: directory
+
+- name: Copy created war file for webserver image
+  ansible.builtin.copy:
+    src: "{{ item.path }}"
+    dest: /root/war/
+    force: yes
+    remote_src: yes
+  with_items: "{{ files_to_copy.files }}"
+
+- name: Login into docker hub
+  community.docker.docker_login:
+    username: "{{ dockerhub_username }}"
+    password: "{{ dockerhub_token }}"
+
+- name: Copy Dockerfile file for webserver image
+  ansible.builtin.copy:
+    src: Dockerfile
+    dest: /root/
+    force: yes
+
+- name: Create and upload webserver image
+  community.docker.docker_image:
+    build:
+      path: /root/
+      rm: yes
+      pull: no
+    repository: "{{ [dockerhub_username, webserver_image_name] | join('/') | default('artempvl/webserver') }}"
+    name: "{{ webserver_image_name | default('webserver') }}"
+    tag: "{{ webserver_version | default('latest') }}"
+    source: build
+    push: yes
+    state: present
+
+- name: Clean up unnecessary files
+  ansible.builtin.file: path={{item}} state=absent
+  with_items:
+    - /root/war
+    - /source
+...
