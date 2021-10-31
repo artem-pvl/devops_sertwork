@@ -86,16 +86,14 @@ pipeline {
         echo '||| *** ||| pipeline execution failed ||| *** |||'
       }
   }
-  agent {
-    node {
-      docker.withServer('tcp://swarm.example.com:2376', 'swarm-certs') {
-          docker.image("${env.DOCKERHUB_CREDS_USR}/${env.BUILD_SERVER_NAME}:${env.BUILD_SERVER_VERSION}").withRun('') {
-              /* do things */
-            withMaven {
-              sh 'mvn package'
-            }
+  node {
+    docker.withServer('tcp://swarm.example.com:2376', 'swarm-certs') {
+        docker.image("${env.DOCKERHUB_CREDS_USR}/${env.BUILD_SERVER_NAME}:${env.BUILD_SERVER_VERSION}").withRun('') {
+            /* do things */
+          withMaven {
+            sh 'mvn package'
           }
-      }
+        }
     }
   }
     // stage('Build webserver image and push to docker') {
