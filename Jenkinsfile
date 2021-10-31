@@ -75,6 +75,18 @@ pipeline {
   //       sh 'ssh root@node-1 docker image prune -a -f'
   //     }
   //   }
+    stage('Build webserver image') {
+      node {
+        docker.withServer('tcp://swarm.example.com:2376', 'swarm-certs') {
+            docker.image("${env.DOCKERHUB_CREDS_USR}/${env.BUILD_SERVER_NAME}:${env.BUILD_SERVER_VERSION}").withRun('') {
+                /* do things */
+              withMaven {
+                sh 'mvn package'
+              }
+            }
+        }
+      }
+    }
   }
   post {
       success {
@@ -85,16 +97,6 @@ pipeline {
         // cleanWs()
         echo '||| *** ||| pipeline execution failed ||| *** |||'
       }
-  }
-  node {
-    docker.withServer('tcp://swarm.example.com:2376', 'swarm-certs') {
-        docker.image("${env.DOCKERHUB_CREDS_USR}/${env.BUILD_SERVER_NAME}:${env.BUILD_SERVER_VERSION}").withRun('') {
-            /* do things */
-          withMaven {
-            sh 'mvn package'
-          }
-        }
-    }
   }
     // stage('Build webserver image and push to docker') {
     //   docker.withDockerServer([uri: "tcp://${env.BUILDSERVER_IP}:2376"]) {
