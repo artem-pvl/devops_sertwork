@@ -77,7 +77,7 @@ pipeline {
   //   }
     stage('Build webserver image') {
       steps {
-        echo '$BUILDSRVER_IP'
+        echo "${env.BUILDSRVER_IP}"
       }
     }
   }
