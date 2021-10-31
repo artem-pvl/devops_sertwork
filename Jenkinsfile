@@ -77,12 +77,21 @@ pipeline {
   //   }
     stage('Build webserver image') {
       steps {
-        docker.withServer('tcp://swarm.example.com:2376', 'swarm-certs') {
+        withDockerServer([uri: "tcp://${env.BUILDSERVER_IP}:2376"]) {
+          // agent {
+          //   docker {
+          //     alwaysPull true
+          //     args '-u 0:0'
+          //     image "${env.DOCKERHUB_CREDS_USR}/${env.BUILD_SERVER_NAME}:${env.BUILD_SERVER_VERSION}"
+          //   }
+          // }
+          script {
           docker.image("${env.DOCKERHUB_CREDS_USR}/${env.BUILD_SERVER_NAME}:${env.BUILD_SERVER_VERSION}").withRun('') {
               /* do things */
             withMaven {
               sh 'mvn package'
             }
+          }
           }
         }
       }
