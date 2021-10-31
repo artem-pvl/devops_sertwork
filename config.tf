@@ -78,6 +78,9 @@ resource "aws_instance" "web" {
   tags = {
     Name = "web"
   }
+  provisioner "local-exec" {
+    command = "WEBSERVER_IP=${aws_instance.web.public_ip}"
+  }
 }
 
 resource "aws_instance" "build" {
@@ -90,6 +93,9 @@ resource "aws_instance" "build" {
   tags = {
     Name = "build"
   }
+  provisioner "local-exec" {
+    command = "BUILDSRVER_IP=${aws_instance.build.public_ip}"
+  }
 }
 
 resource "local_file" "hosts" {
@@ -101,4 +107,7 @@ resource "local_file" "hosts" {
     )}"
     filename = "./hosts"
     # file_permission = "0600"
+  # provisioner "local-exec" {
+  #   command = "BUILDSRVER_IP=${aws_instance.build.public_ip}; WEBSERVER_IP=${aws_instance.web.public_ip}"
+  # }
 }

@@ -6,6 +6,10 @@ pipeline {
 
   agent any
   stages {
+    environment {
+        BUILDSRVER_IP = ''
+        WEBSERVER_IP = ''
+    }
     // stage('Get code of infrastucture') {
     //   git 'https://github.com/artem-pvl/devops_sertwork.git'
     // }
@@ -34,6 +38,33 @@ pipeline {
                         playbook: 'conveer.yml',
                         extras: '-vv'
         )
+      }
+    }
+    stage('Build webserver image and push to docker') {
+      withDockerServer([uri: "tcp://${env.BUILDSERVER_IP}:2376"]) {
+        agent {
+          docker {
+            alwaysPull true
+            args '-u 0:0'
+            image "${env.DOCKERHUB_CREDS_USR}/${env.BUILD_SERVER_NAME}:${env.BUILD_SERVER_VERSION}"
+          }
+        }
+        steps {
+          sh 'git clone https://github.com/artem-pvl/devops_hw_11.git /conf'
+          git 'https://github.com/boxfuse/boxfuse-sample-java-war-hello.git'
+          withMaven {
+            sh 'mvn package'
+          }
+          // script {
+          //   docker.withRegistry('http://nexus:8123', '6b2d0b83-9cca-4d23-b69b-bcf247bc8379') {
+          //     sh 'cp ./target/hello-1.0.war /conf/prod'
+          //     sh 'docker build --tag prodserver /conf/prod'
+          //     sh 'docker tag prodserver nexus:8123/prodserver:latest'
+          //     docker.image('prodserver').push('latest')
+          //     sh 'docker image prune -a -f'
+          //   }
+          // }
+        }
       }
     }
   //   stage('Build app image and push to nexus') {
