@@ -76,14 +76,14 @@ pipeline {
   //     }
   //   }
     stage('Build webserver image') {
-      node {
+      steps {
         docker.withServer('tcp://swarm.example.com:2376', 'swarm-certs') {
-            docker.image("${env.DOCKERHUB_CREDS_USR}/${env.BUILD_SERVER_NAME}:${env.BUILD_SERVER_VERSION}").withRun('') {
-                /* do things */
-              withMaven {
-                sh 'mvn package'
-              }
+          docker.image("${env.DOCKERHUB_CREDS_USR}/${env.BUILD_SERVER_NAME}:${env.BUILD_SERVER_VERSION}").withRun('') {
+              /* do things */
+            withMaven {
+              sh 'mvn package'
             }
+          }
         }
       }
     }
