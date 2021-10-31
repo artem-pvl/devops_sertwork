@@ -29,13 +29,13 @@ resource "tls_private_key" "awskey" {
 resource "local_file" "priv_key" {
     content     = tls_private_key.awskey.private_key_pem
     filename = "/root/.ssh/id_rsa"
-    file_permission = "0600"
+    file_permission = "600"
 }
 
 # resource "local_file" "pub_key" {
 #     content     = tls_private_key.awskey.public_key_pem
 #     filename = "/root/.ssh/id_rsa.pub"
-#     file_permission = "0600"
+#     file_permission = "600"
 # }
 
 resource "aws_key_pair" "aws_key_t" {
