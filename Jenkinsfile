@@ -31,7 +31,8 @@ pipeline {
                         disableHostKeyChecking: true,
                         installation: 'Ansible',
                         inventory: 'hosts',
-                        playbook: 'conveer.yml'
+                        playbook: 'conveer.yml',
+                        extras: '-vv'
         )
       }
     }
