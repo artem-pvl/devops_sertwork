@@ -12,10 +12,6 @@ terraform {
       source = "hashicorp/local"
       version = "2.1.0"
     }
-    docker = {
-      source = "kreuzwerker/docker"
-      version = "2.15.0"
-    }
   }
 }
 
@@ -76,13 +72,6 @@ resource "aws_instance" "web" {
   tags = {
     Name = "web"
   }
-
-  provisioner "remote-exec" {
-    inline = [
-      "apt update",
-      "apt install -y docker.io",
-    ]
-  }
 }
 
 resource "aws_instance" "build" {
@@ -95,32 +84,4 @@ resource "aws_instance" "build" {
   tags = {
     Name = "build"
   }
-
-  provisioner "remote-exec" {
-    inline = [
-      "apt update",
-      "apt install -y docker.io",
-    ]
-  }
 }
-
-provider "docker" {
-  host = "tcp://${aws_instance.build.public_ip}:2376/"
-}
-
-resource "docker_image" "ubuntu" {
-  name = "ubuntu:latest"
-}
-# resource "docker_image" "zoo" {
-#   name = "zoo"
-#   build {
-#     path = "."
-#     tag  = ["zoo:develop"]
-#     build_arg = {
-#       foo : "zoo"
-#     }
-#     label = {
-#       author : "zoo"
-#     }
-#   }
-# }
