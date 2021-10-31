@@ -11,6 +11,9 @@ pipeline {
     // }
     stage('Create infrastructure with Terraform') {
       steps {
+        withCredentials([file(credentialsId: 'aws_credentials', variable: 'aws_cred')]) {
+          writeFile file: 'credentials', text: readFile(aws_cred)
+        }
         sh 'terraform init'
         sh 'terraform plan'
         sh 'terraform apply -auto-approve'

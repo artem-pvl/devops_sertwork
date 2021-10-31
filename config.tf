@@ -18,7 +18,7 @@ terraform {
 # Configure the AWS Provider
 provider "aws" {
   region = "eu-west-3"
-  shared_credentials_file = "/root/.aws/credentials"
+  shared_credentials_file = "./credentials"
 }
 
 resource "tls_private_key" "awskey" {
