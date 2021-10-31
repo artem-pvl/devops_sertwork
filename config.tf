@@ -19,22 +19,26 @@ terraform {
 provider "aws" {
   region = "eu-west-3"
   shared_credentials_file = "/root/.aws/credentials"
-
 }
 
-resource "tls_private_key" "example" {
+resource "tls_private_key" "awskey" {
   algorithm = "RSA"
   rsa_bits  = 4096
 }
 
-resource "local_file" "foo" {
-    content     = tls_private_key.example.private_key_pem
+resource "local_file" "priv_key" {
+    content     = tls_private_key.awskey.private_key_pem
     filename = "/root/.ssh/id_rsa"
+}
+
+resource "local_file" "pub_key" {
+    content     = tls_private_key.awskey.public_key_pem
+    filename = "/root/.ssh/id_rsa.pub"
 }
 
 resource "aws_key_pair" "aws_key_t" {
   key_name   = "aws_key_t"
-  public_key = tls_private_key.example.public_key_openssh
+  public_key = tls_private_key.awskey.public_key_openssh
 }
 
 resource "aws_security_group" "allow_all" {
