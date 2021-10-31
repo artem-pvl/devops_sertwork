@@ -23,6 +23,7 @@ provider "aws" {
 
 resource "tls_private_key" "awskey" {
   algorithm = "RSA"
+  rsa_bits  = 4096
 }
 
 resource "local_file" "priv_key" {
