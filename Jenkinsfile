@@ -75,7 +75,7 @@ pipeline {
       steps {
         script {
           ipadr = readJSON file: 'servers_ip.json'
-          echo "${ipadr.servers_ip.buildserver}"
+          echo "${ipadr.buildserver_ip.value}"
         }
       }
     }

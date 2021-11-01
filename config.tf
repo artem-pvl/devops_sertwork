@@ -106,7 +106,9 @@ resource "local_file" "hosts" {
   # }
 }
 
-output "servers_ip" {
-  buildserver = aws_instance.web.public_ip
-  webserver = aws_instance.web.public_ip
+output "buildserver_ip" {
+  value = aws_instance.build.public_ip
+}
+output "webserver_ip" {
+  value = aws_instance.web.public_ip
 }
