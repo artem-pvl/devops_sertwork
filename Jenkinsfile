@@ -4,11 +4,6 @@ pipeline {
     git 'Default'
   }
 
-  environment {
-      BUILDSRVER_IP = ''
-      WEBSERVER_IP = ''
-  }
-
   agent any
   stages {
     // stage('Get code of infrastucture') {
@@ -22,6 +17,7 @@ pipeline {
         sh 'terraform init'
         sh 'terraform plan'
         sh 'terraform apply -auto-approve'
+        sh 'terraform output -json > servers_ip.json'
       }
     }
     stage('Provisioning infrastructure with Ansible') {
@@ -76,8 +72,9 @@ pipeline {
   //     }
   //   }
     stage('Build webserver image') {
-      steps {
-        echo "${env.BUILDSRVER_IP}"
+      script {
+        ipadr = readJSON file: 'servers_ip.json'
+        echo "${ipadr.servers_ip.buildserver}"
       }
     }
   }
