@@ -72,9 +72,11 @@ pipeline {
   //     }
   //   }
     stage('Build webserver image') {
-      script {
-        ipadr = readJSON file: 'servers_ip.json'
-        echo "${ipadr.servers_ip.buildserver}"
+      steps {
+        script {
+          ipadr = readJSON file: 'servers_ip.json'
+          echo "${ipadr.servers_ip.buildserver}"
+        }
       }
     }
   }
