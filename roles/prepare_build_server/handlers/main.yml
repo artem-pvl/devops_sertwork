@@ -1,8 +1,7 @@
 ---
 # handlers file for buildserver
-handlers:
-  - name: Restart docker
-    systemd:
-        name: docker
-        state: restarted
-        daemon_reload: yes
+- name: Restart docker
+  systemd:
+      name: docker
+      state: restarted
+      daemon_reload: yes
