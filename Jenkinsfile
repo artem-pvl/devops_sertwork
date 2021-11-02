@@ -77,7 +77,7 @@ pipeline {
           ipadr = readJSON file: 'servers_ip.json'
           echo "${ipadr.buildserver_ip.value}"
         }
-        withDockerServer([uri: "tcp://${ipadr.buildserver_ip.value}:2375"]) {
+        withDockerServer([uri: "tcp://${ipadr.buildserver_ip.value}:2375", credentialsId: '']) {
             // some block
           withDockerContainer(args: '-v /var/run/docker.sock:/var/run/docker.sock', image: 'artempvl/buildserver:1.0') {
               // some block
