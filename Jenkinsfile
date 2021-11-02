@@ -86,10 +86,13 @@ pipeline {
               sh 'mvn package'
 
               docker.withRegistry('', 'dockerhub_token') {
-                sh 'cp ./target/hello-1.0.war /webserver'
-                sh 'docker build --tag websrver /webserver'
-                sh 'docker tag webserver webserver:latest'
-                docker.image('webserver').push('latest')
+                sh 'cp ./target/hello-1.0.war ./webserver'
+                // sh 'docker build --tag websrver ./webserver'
+                // sh 'docker tag webserver webserver:latest'
+                def newWeb = docker.build "artempvl/webserver:latest"
+                newWeb.push()
+                // docker.image('webserver').push('latest')
+                // docker.image('webserver').push('latest')
                 sh 'docker image prune -a -f'
               }
             }
