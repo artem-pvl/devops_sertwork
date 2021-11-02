@@ -76,28 +76,35 @@ pipeline {
         script {
           ipadr = readJSON file: 'servers_ip.json'
           echo "${ipadr.buildserver_ip.value}"
+        }
+        withDockerServer([uri: "tcp://${ipadr.buildserver_ip.value}:2375"]) {
+            // some block
+          withDockerContainer(args: '-v /var/run/docker.sock:/var/run/docker.sock', image: 'artempvl/buildserver:1.0') {
+              // some block
+            checkout scm
+            git 'https://github.com/boxfuse/boxfuse-sample-java-war-hello.git'
+          }
+        }
 
-          checkout scm
-
-          docker.withServer("tcp://${ipadr.buildserver_ip.value}:2375", '') {
-            docker.image('artempvl/buildserver:1.0').inside {
-              git 'https://github.com/boxfuse/boxfuse-sample-java-war-hello.git'
+          // docker.withServer("tcp://${ipadr.buildserver_ip.value}:2375", '') {
+          //   docker.image('artempvl/buildserver:1.0').inside {
+              // git 'https://github.com/boxfuse/boxfuse-sample-java-war-hello.git'
 
               // sh 'mvn package'
 
-              docker.withRegistry('', 'dockerhub_token') {
+              // docker.withRegistry('', 'dockerhub_token') {
                 // sh 'cp ./target/hello-1.0.war ./webserver'
                 // sh 'docker build --tag websrver ./webserver'
                 // sh 'docker tag webserver webserver:latest'
-                def newWeb = docker.build "artempvl/webserver:latest"
-                newWeb.push()
+                // def newWeb = docker.build "artempvl/webserver:latest"
+                // newWeb.push()
                 // docker.image('webserver').push('latest')
                 // docker.image('webserver').push('latest')
-                sh 'docker image prune -a -f'
-              }
-            }
-          }
-        }
+                // sh 'docker image prune -a -f'
+              // }
+            // }
+          // }
+        // }
       }
     }
   }
