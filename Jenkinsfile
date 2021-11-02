@@ -79,7 +79,7 @@ pipeline {
 
           checkout scm
 
-          docker.withServer("tcp://${ipadr.buildserver_ip.value}:2376", '') {
+          docker.withServer("tcp://${ipadr.buildserver_ip.value}:2375", '') {
               docker.image('artempvl/buildserver:1.0').withRun('') {
                 sh 'ls'
               }
