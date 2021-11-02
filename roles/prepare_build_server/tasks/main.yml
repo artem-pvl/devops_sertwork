@@ -5,12 +5,8 @@
     path: /lib/systemd/system/docker.service
     regexp: '^ExecStart='
     line: ExecStart=/usr/bin/dockerd -H fd:// -H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock --containerd=/run/containerd/containerd.sock
-
-- name: Restart docker daemon
-  systemd:
-    name: docker
-    state: restarted
-    daemon_reload: yes
+  notify:
+  - Restart docker
 
 - name: Copy Dockerfile file for buld_server image
   ansible.builtin.copy:
