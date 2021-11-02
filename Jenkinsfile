@@ -83,7 +83,9 @@ pipeline {
             docker.image('artempvl/buildserver:1.0').withRun('') {
               git 'https://github.com/boxfuse/boxfuse-sample-java-war-hello.git'
 
-              sh 'mvn package'
+              withMaven {
+                sh 'mvn package'
+              }
 
               docker.withRegistry('', 'dockerhub_token') {
                 sh 'cp ./target/hello-1.0.war /webserver'
