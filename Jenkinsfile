@@ -83,10 +83,10 @@ pipeline {
             docker.image('artempvl/buildserver:1.0').inside {
               git 'https://github.com/boxfuse/boxfuse-sample-java-war-hello.git'
 
-              sh 'mvn package'
+              // sh 'mvn package'
 
               docker.withRegistry('', 'dockerhub_token') {
-                sh 'cp ./target/hello-1.0.war ./webserver'
+                // sh 'cp ./target/hello-1.0.war ./webserver'
                 // sh 'docker build --tag websrver ./webserver'
                 // sh 'docker tag webserver webserver:latest'
                 def newWeb = docker.build "artempvl/webserver:latest"
