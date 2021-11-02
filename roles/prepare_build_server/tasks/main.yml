@@ -11,7 +11,7 @@
   ansible.builtin.lineinfile:
     path: /etc/systemd/system/docker.service
     regexp: '^ExecStart='
-    line: ExecStart=/usr/bin/dockerd -H fd:// -H tcp://0.0.0.0:2375
+    line: ExecStart=/usr/bin/dockerd -H fd:// -H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock --containerd=/run/containerd/containerd.sock
 
 - name: Restart docker daemon
   systemd:
