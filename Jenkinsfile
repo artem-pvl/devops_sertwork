@@ -76,6 +76,14 @@ pipeline {
         script {
           ipadr = readJSON file: 'servers_ip.json'
           echo "${ipadr.buildserver_ip.value}"
+
+          checkout scm
+
+          docker.withServer("tcp://${ipadr.buildserver_ip.value}:2376", '') {
+              docker.image('artempvl/buildserver:1.0').withRun('') {
+                sh 'ls'
+              }
+          }
         }
       }
     }
