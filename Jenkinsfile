@@ -78,11 +78,13 @@ pipeline {
           echo "${ipadr.buildserver_ip.value}"
         }
         withDockerServer([uri: "tcp://${ipadr.buildserver_ip.value}:2375", credentialsId: '']) {
-            // some block
           withDockerContainer(args: '-v /var/run/docker.sock:/var/run/docker.sock', image: 'artempvl/buildserver:1.0') {
-              // some block
             checkout scm
             git 'https://github.com/boxfuse/boxfuse-sample-java-war-hello.git'
+            sh 'mvn package'
+            sh 'cp ./target/hello-1.0.war ./webserver'
+            sh 'docker build --tag websrver ./webserver'
+            sh 'docker tag webserver webserver:latest'
           }
         }
 
