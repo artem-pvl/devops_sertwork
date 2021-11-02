@@ -1,15 +1,8 @@
 ---
 # tasks file for buildserver
-- name: Copy docker.service config
-  ansible.builtin.copy:
-    src: /lib/systemd/system/docker.service
-    dest: /etc/systemd/system/
-    force: yes
-    remote_src: yes
-
 - name: Ensure dockerd listened tcp connections
   ansible.builtin.lineinfile:
-    path: /etc/systemd/system/docker.service
+    path: /lib/systemd/system/docker.service
     regexp: '^ExecStart='
     line: ExecStart=/usr/bin/dockerd -H fd:// -H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock --containerd=/run/containerd/containerd.sock
 
@@ -17,6 +10,7 @@
   systemd:
     name: docker
     state: restarted
+    daemon_reload: yes
 
 - name: Copy Dockerfile file for buld_server image
   ansible.builtin.copy:
