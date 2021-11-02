@@ -83,7 +83,7 @@ pipeline {
             docker.image('artempvl/buildserver:1.0').withRun('') {
               git 'https://github.com/boxfuse/boxfuse-sample-java-war-hello.git'
 
-              withMaven('maven') {
+              withMaven(maven: 'maven') {
                 sh 'mvn package'
               }
 
