@@ -80,12 +80,10 @@ pipeline {
           checkout scm
 
           docker.withServer("tcp://${ipadr.buildserver_ip.value}:2375", '') {
-            docker.image('artempvl/buildserver:1.0').withRun('') {
+            docker.image('artempvl/buildserver:1.0').inside {
               git 'https://github.com/boxfuse/boxfuse-sample-java-war-hello.git'
 
-              withMaven(maven: 'maven') {
-                sh 'mvn package'
-              }
+              sh 'mvn package'
 
               docker.withRegistry('', 'dockerhub_token') {
                 sh 'cp ./target/hello-1.0.war /webserver'
