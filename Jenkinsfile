@@ -88,7 +88,9 @@ pipeline {
         sh "ssh ubuntu@${ipadr.buildserver_ip.value} sudo mv /home/ubuntu/Dockerfile /webserver/"
         sh "ssh ubuntu@${ipadr.buildserver_ip.value} sudo docker build --tag webserver /webserver/"
         sh "ssh ubuntu@${ipadr.buildserver_ip.value} sudo docker tag webserver ${env.DOCKERHUB_CREDS_USR}/webserver:latest"
-        sh "ssh ubuntu@${ipadr.buildserver_ip.value} sudo docker login --password-stdin=${env.PSW} --username=${env.DOCKERHUB_CREDS_USR}"
+        withCredentials([usernamePassword(credentialsId: 'dockerhub_token', passwordVariable: 'PAS', usernameVariable: 'USR')]) {
+          sh "ssh ubuntu@${ipadr.buildserver_ip.value} sudo docker login --password-stdin=$PAS --username=$USR"
+        }
         sh "ssh ubuntu@${ipadr.buildserver_ip.value} sudo docker push ${env.DOCKERHUB_CREDS_USR}/webserver:latest"
         sh "ssh ubuntu@${ipadr.buildserver_ip.value} sudo docker image prune -a -f"
         sh "ssh ubuntu@${ipadr.buildserver_ip.value} sudo rm -rf /webserver"
