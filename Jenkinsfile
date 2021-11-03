@@ -21,12 +21,6 @@ pipeline {
       }
     }
     stage('Provisioning infrastructure with Ansible') {
-      environment {
-          DOCKERHUB_CREDS = credentials('dockerhub_token')
-          BUILD_SERVER_NAME = 'buildserver'
-          BUILD_SERVER_VERSION = '1.0'
-      }
-      steps {
         ansiblePlaybook(become: true,
                         becomeUser: 'ubuntu',
                         disableHostKeyChecking: true,
@@ -72,6 +66,11 @@ pipeline {
   //     }
   //   }
     stage('Build webserver image') {
+      environment {
+          DOCKERHUB_CREDS = credentials('dockerhub_token')
+          // BUILD_SERVER_NAME = 'buildserver'
+          // BUILD_SERVER_VERSION = '1.0'
+      }
       steps {
         script {
           ipadr = readJSON file: 'servers_ip.json'
@@ -82,8 +81,8 @@ pipeline {
         sh "ssh ubuntu@${ipadr.buildserver_ip.value} sudo mkdir -m 666 /webserver"
         sh "ssh ubuntu@${ipadr.buildserver_ip.value} sudo cp /app/target/hello-1.0.war /webserver/"
         sh "ssh ubuntu@${ipadr.buildserver_ip.value} sudo rm -rf /app"
-        sh "scp Dockerfile ubuntu@${ipadr.buildserver_ip.value}:~"
-        sh "ssh ubuntu@${ipadr.buildserver_ip.value} sudo mv ~/Dockerfile /webserver/"
+        sh "scp Dockerfile ubuntu@${ipadr.buildserver_ip.value}:/home/ubuntu"
+        sh "ssh ubuntu@${ipadr.buildserver_ip.value} sudo mv /home/ubuntu/Dockerfile /webserver/"
         sh "ssh ubuntu@${ipadr.buildserver_ip.value} sudo docker build --tag websrver /webserver/"
         sh "ssh ubuntu@${ipadr.buildserver_ip.value} sudo docker tag webserver ${env.DOCKERHUB_CREDS_USR}/webserver:latest"
         sh "ssh ubuntu@${ipadr.buildserver_ip.value} sudo docker login -p ${env.DOCKERHUB_CREDS_PWD} -u ${env.DOCKERHUB_CREDS_USR}"
