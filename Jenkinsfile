@@ -77,7 +77,7 @@ pipeline {
         script {
           ipadr = readJSON file: 'servers_ip.json'
           echo "${ipadr.buildserver_ip.value}"
-          sh "IP_BUILD=${ipadr.buildserver_ip.value}"
+          env.IP_BUILD = ipadr.buildserver_ip.value
         }
         sh "ssh ubuntu@${ipadr.buildserver_ip.value} sudo git clone https://github.com/boxfuse/boxfuse-sample-java-war-hello.git /app"
         sh "ssh ubuntu@${ipadr.buildserver_ip.value} sudo mvn -f /app package"
