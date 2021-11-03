@@ -69,8 +69,6 @@ pipeline {
     stage('Build webserver image') {
       environment {
           DOCKERHUB_CREDS = credentials('dockerhub_token')
-          // BUILD_SERVER_NAME = 'buildserver'
-          // BUILD_SERVER_VERSION = '1.0'
       }
       steps {
         script {
@@ -91,37 +89,12 @@ pipeline {
         sh "ssh ubuntu@${ipadr.buildserver_ip.value} sudo docker push ${env.DOCKERHUB_CREDS_USR}/webserver:latest"
         sh "ssh ubuntu@${ipadr.buildserver_ip.value} sudo docker image prune -a -f"
         sh "ssh ubuntu@${ipadr.buildserver_ip.value} sudo rm -rf /webserver"
-        // withDockerServer([uri: "tcp://${ipadr.buildserver_ip.value}:2375", credentialsId: '']) {
-        //   withDockerContainer(args: '-v /var/run/docker.sock:/var/run/docker.sock', image: 'artempvl/buildserver:1.0') {
-        //     checkout scm
-        //     // git 'https://github.com/boxfuse/boxfuse-sample-java-war-hello.git'
-        //     sh 'git clone https://github.com/boxfuse/boxfuse-sample-java-war-hello.git /web'
-        //     // sh 'mvn -f /web package'
-        //     // sh 'cp ./target/hello-1.0.war ./webserver/'
-        //     // sh 'docker build --tag websrver ./webserver/'
-        //     // sh 'docker tag webserver webserver:latest'
-        //   }
-        // }
-
-          // docker.withServer("tcp://${ipadr.buildserver_ip.value}:2375", '') {
-          //   docker.image('artempvl/buildserver:1.0').inside {
-              // git 'https://github.com/boxfuse/boxfuse-sample-java-war-hello.git'
-
-              // sh 'mvn package'
-
-              // docker.withRegistry('', 'dockerhub_token') {
-                // sh 'cp ./target/hello-1.0.war ./webserver'
-                // sh 'docker build --tag websrver ./webserver'
-                // sh 'docker tag webserver webserver:latest'
-                // def newWeb = docker.build "artempvl/webserver:latest"
-                // newWeb.push()
-                // docker.image('webserver').push('latest')
-                // docker.image('webserver').push('latest')
-                // sh 'docker image prune -a -f'
-              // }
-            // }
-          // }
-        // }
+      }
+    }
+    stage('Run webserver') {
+      steps {
+        sh "scp docker-compose.yml ubuntu@${ipadr.webserver_ip.value}:~/"
+        sh "ssh ubuntu@${ipadr.webserver_ip.value} sudo docker-compose up -d"
       }
     }
   }
