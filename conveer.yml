@@ -7,7 +7,7 @@
   roles:
     - role: common
 
-- name: Create builserver docker image and push to dockerhub
+- name: Ensure builserver is prepared
   hosts: build
   become: yes
   remote_user: ubuntu

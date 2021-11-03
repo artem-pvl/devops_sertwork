@@ -1,34 +1,29 @@
 ---
 # tasks file for buildserver
-- name: Ensure dockerd listening tcp connections
-  ansible.builtin.lineinfile:
-    path: /lib/systemd/system/docker.service
-    regexp: '^ExecStart='
-    line: ExecStart=/usr/bin/dockerd -H fd:// -H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock --containerd=/run/containerd/containerd.sock
-  notify:
-  - Restart docker
-
-- name: Copy Dockerfile file for buld_server image
-  ansible.builtin.copy:
-    src: Dockerfile
-    dest: ~/
-    force: yes
-
-- name: Login into docker hub
-  community.docker.docker_login:
-    username: "{{ dockerhub_username }}"
-    password: "{{ dockerhub_token }}"
-
-- name: Create build_server image
-  community.docker.docker_image:
-    build:
-      path: ~/
-      rm: yes
-      # pull: yes
-    name: "{{ build_server_name }}"
-    source: build
+- name: Ensure that docker and docker-compose installed
+  apt:
+    pkg:
+      - default-jdk
+      - maven
+      - git
+    update_cache: yes
     state: present
-    tag: "{{ build_server_version }}"
-    repository: "{{ [dockerhub_username, build_server_name] | join('/') }}"
-    push: yes
+
+# - name: Login into docker hub
+#   community.docker.docker_login:
+#     username: "{{ dockerhub_username }}"
+#     password: "{{ dockerhub_token }}"
+
+# - name: Create build_server image
+#   community.docker.docker_image:
+#     build:
+#       path: ~/
+#       rm: yes
+#       # pull: yes
+#     name: "{{ build_server_name }}"
+#     source: build
+#     state: present
+#     tag: "{{ build_server_version }}"
+#     repository: "{{ [dockerhub_username, build_server_name] | join('/') }}"
+#     push: yes
 ...
