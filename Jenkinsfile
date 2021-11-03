@@ -77,13 +77,13 @@ pipeline {
           ipadr = readJSON file: 'servers_ip.json'
           echo "${ipadr.buildserver_ip.value}"
         }
-        sh "ssh ubuntu@${ipadr.buildserver_ip.value} su git clone https://github.com/boxfuse/boxfuse-sample-java-war-hello.git /app"
-        sh "ssh ubuntu@${ipadr.buildserver_ip.value} su mvn -f /app package"
-        sh "ssh ubuntu@${ipadr.buildserver_ip.value} su cp /app/target/hello-1.0.war /webserver/"
-        sh "ssh ubuntu@${ipadr.buildserver_ip.value} su docker build --tag websrver /webserver/"
-        sh "ssh ubuntu@${ipadr.buildserver_ip.value} su docker tag webserver webserver:latest"
+        sh "ssh ubuntu@${ipadr.buildserver_ip.value} sudo git clone https://github.com/boxfuse/boxfuse-sample-java-war-hello.git /app"
+        sh "ssh ubuntu@${ipadr.buildserver_ip.value} sudo mvn -f /app package"
+        sh "ssh ubuntu@${ipadr.buildserver_ip.value} sudo cp /app/target/hello-1.0.war /webserver/"
+        sh "ssh ubuntu@${ipadr.buildserver_ip.value} sudo docker build --tag websrver /webserver/"
+        sh "ssh ubuntu@${ipadr.buildserver_ip.value} sudo docker tag webserver webserver:latest"
         sh "scp Dockerfile ubuntu@${ipadr.buildserver_ip.value}:/webserver/"
-        sh "ssh ubuntu@${ipadr.buildserver_ip.value} su docker login -p ${env.DOCKERHUB_CREDS_PWD} -u ${env.DOCKERHUB_CREDS_USR}"
+        sh "ssh ubuntu@${ipadr.buildserver_ip.value} sudo docker login -p ${env.DOCKERHUB_CREDS_PWD} -u ${env.DOCKERHUB_CREDS_USR}"
         // withDockerServer([uri: "tcp://${ipadr.buildserver_ip.value}:2375", credentialsId: '']) {
         //   withDockerContainer(args: '-v /var/run/docker.sock:/var/run/docker.sock', image: 'artempvl/buildserver:1.0') {
         //     checkout scm
