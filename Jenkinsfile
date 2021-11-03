@@ -84,7 +84,7 @@ pipeline {
         sh "ssh ubuntu@${ipadr.buildserver_ip.value} sudo rm -rf /app"
         sh "scp Dockerfile ubuntu@${ipadr.buildserver_ip.value}:/home/ubuntu"
         sh "ssh ubuntu@${ipadr.buildserver_ip.value} sudo mv /home/ubuntu/Dockerfile /webserver/"
-        sh "ssh ubuntu@${ipadr.buildserver_ip.value} sudo docker build --tag websrver /webserver/"
+        sh "ssh ubuntu@${ipadr.buildserver_ip.value} sudo docker build --tag webserver /webserver/"
         sh "ssh ubuntu@${ipadr.buildserver_ip.value} sudo docker tag webserver ${env.DOCKERHUB_CREDS_USR}/webserver:latest"
         sh "ssh ubuntu@${ipadr.buildserver_ip.value} sudo docker login -p ${env.DOCKERHUB_CREDS_PWD} -u ${env.DOCKERHUB_CREDS_USR}"
         sh "ssh ubuntu@${ipadr.buildserver_ip.value} sudo docker push ${env.DOCKERHUB_CREDS_USR}/webserver:latest"
