@@ -77,9 +77,9 @@ pipeline {
           ipadr = readJSON file: 'servers_ip.json'
           echo "${ipadr.buildserver_ip.value}"
         }
-        sh "ssh ubuntu@${ipadr.buildserver_ip.value} git clone https://github.com/boxfuse/boxfuse-sample-java-war-hello.git /app"
-        sh "ssh ubuntu@${ipadr.buildserver_ip.value} mvn -f /app package"
-        sh "ssh ubuntu@${ipadr.buildserver_ip.value} cp /app/target/hello-1.0.war /webserver/"
+        sh "ssh ubuntu@${ipadr.buildserver_ip.value} su git clone https://github.com/boxfuse/boxfuse-sample-java-war-hello.git /app"
+        sh "ssh ubuntu@${ipadr.buildserver_ip.value} su mvn -f /app package"
+        sh "ssh ubuntu@${ipadr.buildserver_ip.value} su cp /app/target/hello-1.0.war /webserver/"
         sh "ssh ubuntu@${ipadr.buildserver_ip.value} su docker build --tag websrver /webserver/"
         sh "ssh ubuntu@${ipadr.buildserver_ip.value} su docker tag webserver webserver:latest"
         sh "scp Dockerfile ubuntu@${ipadr.buildserver_ip.value}:/webserver/"
