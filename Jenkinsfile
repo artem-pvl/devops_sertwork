@@ -69,7 +69,7 @@ pipeline {
     stage('Build webserver image') {
       environment {
           DOCKERHUB_CREDS = credentials('dockerhub_token')
-          IP_BUILD = ''
+          PSW = DOCKERHUB_CREDS_PSW
           // BUILD_SERVER_NAME = 'buildserver'
           // BUILD_SERVER_VERSION = '1.0'
       }
@@ -88,7 +88,7 @@ pipeline {
         sh "ssh ubuntu@${ipadr.buildserver_ip.value} sudo mv /home/ubuntu/Dockerfile /webserver/"
         sh "ssh ubuntu@${ipadr.buildserver_ip.value} sudo docker build --tag webserver /webserver/"
         sh "ssh ubuntu@${ipadr.buildserver_ip.value} sudo docker tag webserver ${env.DOCKERHUB_CREDS_USR}/webserver:latest"
-        sh ('ssh ubuntu@$IP_BUILD sudo docker login --password-stdin=$DOCKERHUB_CREDS_PSW --username=$DOCKERHUB_CREDS_USR')
+        sh "ssh ubuntu@${ipadr.buildserver_ip.value} sudo docker login --password-stdin=${PSW} --username=${DOCKERHUB_CREDS_USR}"
         sh "ssh ubuntu@${ipadr.buildserver_ip.value} sudo docker push ${env.DOCKERHUB_CREDS_USR}/webserver:latest"
         sh "ssh ubuntu@${ipadr.buildserver_ip.value} sudo docker image prune -a -f"
         sh "ssh ubuntu@${ipadr.buildserver_ip.value} sudo rm -rf /webserver"
