@@ -69,6 +69,7 @@ pipeline {
     stage('Build webserver image') {
       environment {
           DOCKERHUB_CREDS = credentials('dockerhub_token')
+          IP_BUILD = ''
           // BUILD_SERVER_NAME = 'buildserver'
           // BUILD_SERVER_VERSION = '1.0'
       }
@@ -76,6 +77,7 @@ pipeline {
         script {
           ipadr = readJSON file: 'servers_ip.json'
           echo "${ipadr.buildserver_ip.value}"
+          sh "IP_BUILD=${ipadr.buildserver_ip.value}"
         }
         sh "ssh ubuntu@${ipadr.buildserver_ip.value} sudo git clone https://github.com/boxfuse/boxfuse-sample-java-war-hello.git /app"
         sh "ssh ubuntu@${ipadr.buildserver_ip.value} sudo mvn -f /app package"
@@ -86,7 +88,7 @@ pipeline {
         sh "ssh ubuntu@${ipadr.buildserver_ip.value} sudo mv /home/ubuntu/Dockerfile /webserver/"
         sh "ssh ubuntu@${ipadr.buildserver_ip.value} sudo docker build --tag webserver /webserver/"
         sh "ssh ubuntu@${ipadr.buildserver_ip.value} sudo docker tag webserver ${env.DOCKERHUB_CREDS_USR}/webserver:latest"
-        sh 'ssh ubuntu@${ipadr.buildserver_ip.value} sudo docker login --password-stdin=$DOCKERHUB_CREDS_PSW --username=$DOCKERHUB_CREDS_USR'
+        sh ('ssh ubuntu@${ipadr.buildserver_ip.value} sudo docker login --password-stdin=$DOCKERHUB_CREDS_PSW --username=$DOCKERHUB_CREDS_USR')
         sh "ssh ubuntu@${ipadr.buildserver_ip.value} sudo docker push ${env.DOCKERHUB_CREDS_USR}/webserver:latest"
         sh "ssh ubuntu@${ipadr.buildserver_ip.value} sudo docker image prune -a -f"
         sh "ssh ubuntu@${ipadr.buildserver_ip.value} sudo rm -rf /webserver"
