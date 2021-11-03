@@ -21,6 +21,7 @@ pipeline {
       }
     }
     stage('Provisioning infrastructure with Ansible') {
+      steps {
         ansiblePlaybook(become: true,
                         becomeUser: 'ubuntu',
                         disableHostKeyChecking: true,
@@ -160,4 +161,5 @@ pipeline {
         // }
       // }
     // }
+  
 }
