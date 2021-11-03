@@ -80,9 +80,9 @@ pipeline {
         withDockerServer([uri: "tcp://${ipadr.buildserver_ip.value}:2375", credentialsId: '']) {
           withDockerContainer(args: '-v /var/run/docker.sock:/var/run/docker.sock', image: 'artempvl/buildserver:1.0') {
             checkout scm
-            git 'https://github.com/boxfuse/boxfuse-sample-java-war-hello.git'
-            sh 'ls -al'
-            sh 'mvn package'
+            // git 'https://github.com/boxfuse/boxfuse-sample-java-war-hello.git'
+            sh 'git clone https://github.com/boxfuse/boxfuse-sample-java-war-hello.git /web'
+            sh 'mvn -f /web package'
             // sh 'cp ./target/hello-1.0.war ./webserver/'
             // sh 'docker build --tag websrver ./webserver/'
             // sh 'docker tag webserver webserver:latest'

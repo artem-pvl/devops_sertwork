@@ -1,6 +1,6 @@
 ---
 # tasks file for buildserver
-- name: Ensure dockerd listened tcp connections
+- name: Ensure dockerd listening tcp connections
   ansible.builtin.lineinfile:
     path: /lib/systemd/system/docker.service
     regexp: '^ExecStart='
