@@ -69,7 +69,7 @@ pipeline {
     stage('Build webserver image') {
       environment {
           DOCKERHUB_CREDS = credentials('dockerhub_token')
-          PSW = DOCKERHUB_CREDS_PSW
+          PSW = env.DOCKERHUB_CREDS_PSW
           // BUILD_SERVER_NAME = 'buildserver'
           // BUILD_SERVER_VERSION = '1.0'
       }
