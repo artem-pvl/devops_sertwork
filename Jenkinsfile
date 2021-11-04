@@ -33,6 +33,7 @@ pipeline {
       }
     }
     stage('Build webserver image') {
+      steps {
         script {
           ipadr = readJSON file: 'servers_ip.json'
           echo "${ipadr.buildserver_ip.value}"
@@ -69,11 +70,11 @@ pipeline {
     }
   }
   post {
-      success {
-        chuckNorris()
-      }
-      failure {
-        echo '||| *** ||| pipeline execution failed ||| *** |||'
-      }
+    success {
+      chuckNorris()
+    }
+    failure {
+      echo '||| *** ||| pipeline execution failed ||| *** |||'
+    }
   }
 }
