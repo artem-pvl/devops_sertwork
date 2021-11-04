@@ -47,7 +47,7 @@ pipeline {
         sh "scp Dockerfile ubuntu@${ipadr.buildserver_ip.value}:/home/ubuntu"
         sh "ssh ubuntu@${ipadr.buildserver_ip.value} sudo mv /home/ubuntu/Dockerfile /webserver/"
         sh "ssh ubuntu@${ipadr.buildserver_ip.value} sudo docker build -t ws /webserver/"
-        sh "ssh ubuntu@${ipadr.buildserver_ip.value} sudo docker tag ws ${env.DOCKERHUB_CREDS_USR}/ws:1.0"
+        sh "ssh ubuntu@${ipadr.buildserver_ip.value} sudo docker tag ws ${env.DOCKERHUB_CREDS_USR}/ws:ws"
         // sh "ssh ubuntu@${ipadr.buildserver_ip.value} sudo docker images"
         sh "ssh ubuntu@${ipadr.buildserver_ip.value} sudo docker logout"
         sh "ssh ubuntu@${ipadr.buildserver_ip.value} sudo echo '$DOCKERHUB_CREDS_PSW' | docker login --username $DOCKERHUB_CREDS_USR --password-stdin"
