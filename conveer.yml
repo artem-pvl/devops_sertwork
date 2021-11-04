@@ -1,11 +1,11 @@
 ---
-- name: Ensure for docker and docker-compose installed on servers
-  hosts: all
-  become: yes
-  remote_user: ubuntu
-  become_user: root
-  roles:
-    - role: common
+# - name: Ensure for docker installed on servers
+#   hosts: all
+#   become: yes
+#   remote_user: ubuntu
+#   become_user: root
+#   roles:
+#     - role: common
 
 - name: Ensure builserver is prepared
   hosts: build
@@ -15,8 +15,6 @@
   roles:
     - role: prepare_build_server
       vars:
-        # build_server_name: "{{ lookup('env','BUILD_SERVER_NAME') }}"
-        # build_server_version: "{{ lookup('env','BUILD_SERVER_VERSION') }}"
         dockerhub_username: "{{ lookup('env','DOCKERHUB_CREDS_USR') }}"
         dockerhub_token: "{{ lookup('env','DOCKERHUB_CREDS_PSW') }}"
 
@@ -27,41 +25,4 @@
   become_user: root
   roles:
     - role: prepare_web_server
-
-# - name: Create aws hosts
-#   hosts: 127.0.0.1
-#   connection: local
-#   become: yes
-#   become_user: root
-#   roles:
-#     - role: runvm
-
-# - name: Build prod docker image
-#   hosts: build
-#   become: yes
-#   become_user: root
-#   roles:
-#     - role: common
-#     - role: build_webserver
-#       vars:
-#         source_repository_url: 'https://github.com/boxfuse/boxfuse-sample-java-war-hello.git'
-#         build_server_name: buildingserver
-#         build_server_version: 0.1
-#         dockerhub_username: 'artempvl'
-#         dockerhub_token: 'cfb00c0f-3097-42d7-b18d-984f27200c5e'
-#         webserver_image_name: webserver1
-#         webserver_version: 0.0.1
-
-# - name: Run web server
-#   hosts: web
-#   become: yes
-#   become_user: root
-#   roles:
-#     - role: webserver
-#       vars:
-#         webserver_port: 80
-#         dockerhub_username: 'artempvl'
-#         dockerhub_token: 'cfb00c0f-3097-42d7-b18d-984f27200c5e'
-#         webserver_image_name: webserver1
-#         webserver_version: 0.0.1
 ...

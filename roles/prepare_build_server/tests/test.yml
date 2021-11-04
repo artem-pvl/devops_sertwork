@@ -2,4 +2,4 @@
 - hosts: localhost
   remote_user: root
   roles:
-    - buildserver
+    - prepare_build_server
