@@ -53,11 +53,11 @@ pipeline {
         sh "ssh ubuntu@${ipadr.buildserver_ip.value} sudo docker image prune -a -f"
         sh "ssh ubuntu@${ipadr.buildserver_ip.value} sudo rm -rf /webserver"
       }
-    }
-    post {
-      failure {
-        sh "ssh ubuntu@${ipadr.buildserver_ip.value} sudo rm -rf /app"
-        sh "ssh ubuntu@${ipadr.buildserver_ip.value} sudo rm -rf /webserver"
+      post {
+        failure {
+          sh "ssh ubuntu@${ipadr.buildserver_ip.value} sudo rm -rf /app"
+          sh "ssh ubuntu@${ipadr.buildserver_ip.value} sudo rm -rf /webserver"
+        }
       }
     }
     stage('Run webserver') {
