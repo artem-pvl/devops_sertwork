@@ -12,8 +12,8 @@ pipeline {
           writeFile file: 'credentials', text: readFile(aws_cred)
         }
         sh 'terraform init'
-        sh 'terraform plan'
-        sh 'terraform apply -auto-approve'
+        sh 'terraform plan -out=plan'
+        sh 'terraform apply -auto-approve plan'
         sh 'terraform output -json > servers_ip.json'
       }
     }
