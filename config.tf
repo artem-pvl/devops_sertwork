@@ -32,12 +32,6 @@ resource "local_file" "priv_key" {
     file_permission = "600"
 }
 
-# resource "local_file" "pub_key" {
-#     content     = tls_private_key.awskey.public_key_pem
-#     filename = "/root/.ssh/id_rsa.pub"
-#     file_permission = "600"
-# }
-
 resource "aws_key_pair" "aws_key_t" {
   key_name   = "aws_key_t"
   public_key = tls_private_key.awskey.public_key_openssh
@@ -100,10 +94,6 @@ resource "local_file" "hosts" {
       }
     )}"
     filename = "./hosts"
-    # file_permission = "0600"
-  # provisioner "local-exec" {
-  #   command = "BUILDSRVER_IP=${aws_instance.build.public_ip}; WEBSERVER_IP=${aws_instance.web.public_ip}"
-  # }
 }
 
 output "buildserver_ip" {
