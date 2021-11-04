@@ -1,6 +1,6 @@
 ---
 # tasks file for common
-- name: Ensure that docker and docker-compose installed
+- name: Ensure that docker installed
   apt:
     pkg:
       - docker
