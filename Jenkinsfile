@@ -3,12 +3,12 @@ pipeline {
     terraform 'Terraform'
     git 'Default'
   }
+  environment {
+      DOCKERHUB_CREDS = credentials('dockerhub_token')
+  }
 
   agent any
   stages {
-    environment {
-        DOCKERHUB_CREDS = credentials('dockerhub_token')
-    }
     steps {
     stage('Create infrastructure with Terraform') {
       steps {
