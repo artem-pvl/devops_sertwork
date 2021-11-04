@@ -51,7 +51,7 @@ pipeline {
         sh "ssh ubuntu@${ipadr.buildserver_ip.value} sudo docker logout"
         sh "echo '$DOCKERHUB_CREDS_PSW' | ssh ubuntu@${ipadr.buildserver_ip.value} sudo docker login --username $DOCKERHUB_CREDS_USR --password-stdin"
         sh "ssh ubuntu@${ipadr.buildserver_ip.value} sudo docker push ${env.DOCKERHUB_CREDS_USR}/ws:latest"
-        sh "ssh ubuntu@${ipadr.buildserver_ip.value} sudo docker image prune -a -f"
+        sh "ssh ubuntu@${ipadr.buildserver_ip.value} sudo docker image prune -f"
         sh "ssh ubuntu@${ipadr.buildserver_ip.value} sudo rm -rf /webserver"
       }
       post {
