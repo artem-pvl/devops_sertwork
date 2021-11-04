@@ -3,7 +3,7 @@ version: "3.6"
 services:
 
   run:
-    image: "${DOCKERHUB_CREDS_USR}/webserver:latest"
+    image: "${DOCKERHUB_CREDS_USR}/ws:latest"
     ports:
       - 80:8080
 ...
