@@ -15,10 +15,18 @@
   roles:
     - role: prepare_build_server
       vars:
-        build_server_name: "{{ lookup('env','BUILD_SERVER_NAME') }}"
-        build_server_version: "{{ lookup('env','BUILD_SERVER_VERSION') }}"
+        # build_server_name: "{{ lookup('env','BUILD_SERVER_NAME') }}"
+        # build_server_version: "{{ lookup('env','BUILD_SERVER_VERSION') }}"
         dockerhub_username: "{{ lookup('env','DOCKERHUB_CREDS_USR') }}"
         dockerhub_token: "{{ lookup('env','DOCKERHUB_CREDS_PSW') }}"
+
+- name: Ensure webserver is prepared
+  hosts: web
+  become: yes
+  remote_user: ubuntu
+  become_user: root
+  roles:
+    - role: prepare_web_server
 
 # - name: Create aws hosts
 #   hosts: 127.0.0.1

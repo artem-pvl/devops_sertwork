@@ -6,9 +6,6 @@ pipeline {
 
   agent any
   stages {
-    // stage('Get code of infrastucture') {
-    //   git 'https://github.com/artem-pvl/devops_sertwork.git'
-    // }
     stage('Create infrastructure with Terraform') {
       steps {
         withCredentials([file(credentialsId: 'aws_credentials', variable: 'aws_cred')]) {
