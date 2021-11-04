@@ -77,7 +77,6 @@ pipeline {
         chuckNorris()
       }
       failure {
-        cleanWs()
         echo '||| *** ||| pipeline execution failed ||| *** |||'
       }
   }
