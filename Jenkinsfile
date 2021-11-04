@@ -65,7 +65,7 @@ pipeline {
       steps {
         sh "rsync docker-compose.yml ubuntu@${ipadr.webserver_ip.value}:~/"
         sh "ssh ubuntu@${ipadr.webserver_ip.value} sudo docker pull ${env.DOCKERHUB_CREDS_USR}/ws:latest"
-        sh "ssh ubuntu@${ipadr.webserver_ip.value} echo 'DOCKERHUB_CREDS_USR=${env.DOCKERHUB_CREDS_USR}' > .env"
+        sh "echo 'DOCKERHUB_CREDS_USR=${env.DOCKERHUB_CREDS_USR}' > ssh ubuntu@${ipadr.webserver_ip.value} .env"
         sh "ssh ubuntu@${ipadr.webserver_ip.value} sudo docker-compose up -d"
       }
     }
