@@ -28,7 +28,7 @@ pipeline {
                         installation: 'Ansible',
                         inventory: 'hosts',
                         playbook: 'conveer.yml',
-                        extras: '-vv'
+                        extras: '-v'
         )
       }
     }
@@ -68,6 +68,7 @@ pipeline {
         sh "rsync .env ubuntu@${ipadr.webserver_ip.value}:~/"
         sh "ssh ubuntu@${ipadr.webserver_ip.value} sudo docker pull ${env.DOCKERHUB_CREDS_USR}/ws:latest"
         sh "ssh ubuntu@${ipadr.webserver_ip.value} sudo docker-compose up -d"
+        sh "ssh ubuntu@${ipadr.webserver_ip.value} sudo docker image prune -f"
       }
     }
   }
