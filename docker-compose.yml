@@ -3,7 +3,7 @@ version: "3.6"
 services:
 
   run:
-    image: artempvl/webserver:latest
+    image: "${DOCKERHUB_CREDS_USR}/webserver:latest"
     ports:
-      - 50:8080
+      - 80:8080
 ...

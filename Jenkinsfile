@@ -93,8 +93,10 @@ pipeline {
     }
     stage('Run webserver') {
       steps {
-        sh "scp docker-compose.yml ubuntu@${ipadr.webserver_ip.value}:~/"
+        sh "rsync docker-compose.yml ubuntu@${ipadr.webserver_ip.value}:~/"
+        sh "ssh ubuntu@${ipadr.webserver_ip.value} sudo docker pull ${env.DOCKERHUB_CREDS_USR}/webserver:latest"
         sh "ssh ubuntu@${ipadr.webserver_ip.value} sudo docker-compose up -d"
+        // $
       }
     }
   }
