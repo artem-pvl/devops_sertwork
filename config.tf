@@ -78,18 +78,11 @@ resource "aws_instance" "build" {
   ami                    = "ami-0f7cd40eac2214b37"
   instance_type          = "t2.micro"
   vpc_security_group_ids = [aws_security_group.allow_all.id]
-  /* key_name               = aws_key_pair.aws_key_t.key_name */
+  key_name               = aws_key_pair.aws_key_t.key_name
   associate_public_ip_address = true
 
   tags = {
     Name = "build"
-  }
-  connection {
-    type        = "ssh"
-    host        = self.public_ip
-    user        = "ubuntu"
-    private_key = tls_private_key.awskey.private_key_pem
-    timeout     = "4m"
   }
 }
 
