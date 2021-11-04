@@ -6,6 +6,10 @@ pipeline {
 
   agent any
   stages {
+    environment {
+        DOCKERHUB_CREDS = credentials('dockerhub_token')
+    }
+    steps {
     stage('Create infrastructure with Terraform') {
       steps {
         withCredentials([file(credentialsId: 'aws_credentials', variable: 'aws_cred')]) {
@@ -30,10 +34,6 @@ pipeline {
       }
     }
     stage('Build webserver image') {
-      environment {
-          DOCKERHUB_CREDS = credentials('dockerhub_token')
-      }
-      steps {
         script {
           ipadr = readJSON file: 'servers_ip.json'
           echo "${ipadr.buildserver_ip.value}"
@@ -62,9 +62,9 @@ pipeline {
       }
     }
     stage('Run webserver') {
-      environment {
-          DOCKERHUB_CREDS = credentials('dockerhub_token')
-      }
+      // environment {
+      //     DOCKERHUB_CREDS = credentials('dockerhub_token')
+      // }
       steps {
         sh "rsync docker-compose.yml ubuntu@${ipadr.webserver_ip.value}:~/"
         sh "ssh ubuntu@${ipadr.webserver_ip.value} sudo docker pull ${env.DOCKERHUB_CREDS_USR}/ws:latest"
